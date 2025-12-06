@@ -1,0 +1,16 @@
+=> It is just a program that pretends to be a 
+computer.
+We build VM's to:
+1- We can run their own instructions
+2- WE can study how CPU works
+3- We can build languages like Python, Java.
+
+Steps for building VM's
+1- Our VM needs a place to store numbers. We call this a stack.
+2- Our VM needs instructions like PUSH 5, ADD, PRINT.
+3- Our VM needs to read the instructions one by one. This is called run loop.
+
+
+Stack is just a list
+ip means instructions pointers
+Program means list of instructions
