@@ -1,4 +1,8 @@
-=> It is just a program that pretends to be a 
+=> A virtual machine is a program that behaves like a computer inside a computer . It givees a clean place to run code. There are two main senses of virtual machine1 
+1- A hardware style virtual machine => This created a whole virtual computer with virtual CPU memory and devices. Examples are Virtual Box
+2 - A language style virtual machine => This runs programs written in a special intermeditate form called bytecode. Examples are the Java VIrtual Machine and python bytecode interpreter. It is not a full full operating system. It is a layer that executes code for a language
+
+It is just a program that pretends to be a 
 computer.
 We build VM's to:
 1- We can run their own instructions
