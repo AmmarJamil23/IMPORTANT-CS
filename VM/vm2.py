@@ -72,11 +72,28 @@ program = [
     PUSH, 10,
     PUSH, 3,
     SUB,
-    PUSH, 7,
+    PUSH, 8,
     DIV,
     PRINT,
     HALT
 ]
+
+# program = [
+#    PUSH, 5,
+
+#    PUSH, 1,
+#    SUB,
+
+#    PUSH, 0,
+#    JZ, 18,
+
+#    PUSH, 1,
+#    JZ, 2,
+
+#    PRINT,
+#    HALT
+
+# ]
 
 if __name__ == "__main__":
     vm = VM(program)
