@@ -1,0 +1,23 @@
+A compiler is a program that takes human readable code and turns it inro something machines can run.
+Basic flow of compiler
+1- Lexer
+Breaks text into small tokens like identifiers, numbers, keyboards
+2- Parser
+Understands structure like expressions, statements, functions.
+3- AST (abstract syntax tree)
+A tree that represents the meaning of the code.
+4- Code generation
+Turns the AST inot bytecode or machine code.
+
+
+On the other hand interpreter read code and executes it directly.
+
+FIRST STEP : LEXING
+lexing is just turning characters into tokens.
+Example => x = 10 + 20
+Becomes 
+IDENT(x)
+EQUAL
+NUMBER(10)
+PLUS
+NUMBER(20)
