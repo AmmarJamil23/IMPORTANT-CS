@@ -1,4 +1,3 @@
-
 def tokenize(code):
     tokens = []
     i = 0
@@ -14,7 +13,11 @@ def tokenize(code):
             start = i
             while i < len(code) and code[i].isalnum():
                 i += 1
-            tokens.append(("IDENT", code[start:i]))
+            ident = code[start:i]
+            if ident == "print":
+                tokens.append(("PRINT", ident))
+            else:
+                tokens.append(("IDENT", ident))
 
         elif c.isdigit():
             start = i
@@ -26,16 +29,8 @@ def tokenize(code):
             tokens.append(("PLUS", "+"))
             i += 1
 
-        elif c == "-":
-            tokens.append(("MINUS", "-"))
-            i += 1
-
         elif c == "*":
-            tokens.append(("MULTIPLY", "*"))
-            i += 1
-
-        elif c == "/":
-            tokens.append(("DIVIDE", "/"))
+            tokens.append(("MULT", "*"))
             i += 1
 
         elif c == "=":
@@ -43,12 +38,14 @@ def tokenize(code):
             i += 1
 
         elif c == "(":
-            tokens.append(("LEFT BRACKET", "("))
+            tokens.append(("LPAREN", "("))
             i += 1
 
-        else: 
-            raise ValueError("Unexpected character: " + c)
+        elif c == ")":
+            tokens.append(("RPAREN", ")"))
+            i += 1
+
+        else:
+            raise ValueError("Unknown character: " + c)
 
     return tokens
-
-print(tokenize("x = 10 + 20 + 23 / 34+4"))

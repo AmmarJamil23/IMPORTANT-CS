@@ -21,3 +21,7 @@ EQUAL
 NUMBER(10)
 PLUS
 NUMBER(20)
+
+
+SECOND STEP : PARSING
+parsing is turning tokens into structured tree the computer can understand.
