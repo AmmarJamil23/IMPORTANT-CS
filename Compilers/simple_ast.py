@@ -1,29 +1,41 @@
 class Number:
     def __init__(self, value):
         self.value = value
+    def __repr__(self):
+        return f"Number({self.value})"
 
 class Var:
     def __init__(self, name):
         self.name = name
+    def __repr__(self):
+        return f"Var({self.name})"
 
 class Add:
     def __init__(self, left, right):
         self.left = left
         self.right = right
+    def __repr__(self):
+        return f"Add({self.left}, {self.right})"
 
 class Mul:
     def __init__(self, left, right):
         self.left = left
         self.right = right
+    def __repr__(self):
+        return f"Mul({self.left}, {self.right})"
 
 class Assign:
     def __init__(self, name, value):
         self.name = name
         self.value = value
+    def __repr__(self):
+        return f"Assign({self.name}, {self.value})"
 
 class Print:
     def __init__(self, value):
         self.value = value
+    def __repr__(self):
+        return f"Print({self.value})"
 
 
 class Parser:
