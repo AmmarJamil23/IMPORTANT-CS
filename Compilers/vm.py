@@ -5,7 +5,6 @@ SET_LOCAL = 4
 GET_LOCAL = 5
 PRINT = 6
 HALT = 0
-
 class VM:
     def __init__(self, code):
         self.code = code
