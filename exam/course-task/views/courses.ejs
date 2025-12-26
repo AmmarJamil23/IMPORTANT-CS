@@ -1,0 +1,13 @@
+<h2>Course List</h2>
+
+<ul>
+  <% courses.forEach(course => { %>
+    <li>
+      <%= course.title %> 
+      (<%= course.code %>) 
+      - <%= course.instructor %>
+    </li>
+  <% }) %>
+</ul>
+
+<a href="/courses/add">Add New Course</a>
