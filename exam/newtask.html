@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Blog</title>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="fixed w-full flex justify-center gap-8 p-4 bg-white shadow">
+        <a href="#home">Home</a>
+        <a href="#blogs">Blogs</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+    </nav>
+
+    <section id="home" class="min-h-screen flex items-center justify-center" >
+        <h1 class="text-4xl font-bold">My Blog</h1>
+    </section>
+    
+    <section id="blogs" class="p-10 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="border p-4">Blog One</div>
+        <div class="border p-4">Blog Two</div>
+        <div class="border p-4">Blog Three</div>
+    </section>
+
+    <section>
+        <form id="form" class="max-w-md mx-auto space-y-3">
+            <input id="name" class="border p-2 w-full" placeholder="Name">
+            <input id="email" class="border p-2 w-full" placeholder="Email">
+            <input id="msg" class="border p-2 w-full" placeholder="Message">
+
+            <button class="bg-black text-white px-4 py-2">Send</button>
+        </form>
+    </section>
+
+    <script>
+        document.getElementById("form").addEventListener("submit", function (e) {
+                e.preventDefault();
+
+                if (!name.value || !email.value || !msg.value) {
+                    alert("All fields required");
+                    return;
+                }
+
+                alert("Form submitted successfully");
+            });
+
+    </script>
+</body>
+</html>
