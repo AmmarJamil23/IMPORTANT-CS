@@ -1,0 +1,12 @@
+==> A transaction exists because databses are used by many users at the same time.
+
+Without transaction , this would happen:
+--> Two users read the same data --> Both modify it --> Both write it back --> One update silently overwrites the other.
+This is called lost update and it destroys correctness.
+
+Transactions gurantees ACID 
+==> Atomicity means either all changes happen or none happens.
+==> Consistency means databse rules are always respected.
+==> Isolation means concurent Transactionsdo not corrupt each other.
+==> Durability means committed data survives crashes.
+
