@@ -10,3 +10,23 @@ Transactions gurantees ACID
 ==> Isolation means concurent Transactionsdo not corrupt each other.
 ==> Durability means committed data survives crashes.
 
+Why transactions exist
+Transactions exist to keep data correct when many things happen at the same time. A transaction groups multiple database operations into one logical unit. Either all changes happen or none happen. This prevents partial updates. For example money should not be deducted from one account unless it is added to another. Transactions protect data from crashes failures and unexpected errors.
+Why isolation levels matter
+Isolation levels control how much one transaction can see changes made by another transaction. Without proper isolation one transaction might read incomplete or temporary data. This can cause wrong results like double counting or missing updates. Different isolation levels balance correctness and performance. Higher isolation is safer but slower. Lower isolation is faster but riskier.
+Why race conditions happen
+Race conditions happen when multiple processes or threads access shared data at the same time without proper coordination. The final result depends on timing which is unpredictable. Two users updating the same record at once can overwrite each other’s changes. Race conditions are hard to reproduce because they depend on exact timing.
+Why bugs appear only in production
+Production systems have real load real data and real timing issues. Many users access the system at the same time which rarely happens in development. Network delays slow databases and partial failures expose hidden assumptions. These conditions trigger race conditions memory issues and scaling problems that tests did not cover.
+Why databases are central to system behavior
+The database stores the system’s source of truth. Almost every request reads or writes data. Database design affects performance consistency and correctness. Locking indexing transactions and schema choices directly shape how the whole system behaves. Many system bugs are actually database behavior misunderstandings rather than code bugs.
+Why databases alone do not scale
+Databases are built for correctness not unlimited speed. As traffic grows the number of reads and writes increases quickly. Locks transactions and disk access become bottlenecks. Vertical scaling has limits and horizontal scaling is complex because data must stay consistent. A single database often becomes the slowest and most stressed part of the system.
+How caches reduce load
+Caches store frequently used data in fast memory instead of hitting the database every time. This reduces read pressure and improves response time. Many users can be served from the same cached value. The database handles fewer queries and can focus on writes and critical operations. Caches trade freshness for speed.
+Why cache invalidation is hard
+Cache invalidation means deciding when cached data is no longer correct. Data can change in many places and at many times. If invalidation is late users see stale data. If it is too aggressive the cache becomes useless. Distributed systems make this harder because multiple services and nodes must agree on data changes.
+Why caching introduces bugs
+Caching adds another source of truth besides the database. If cache and database go out of sync the system behaves incorrectly. Bugs appear as random stale reads missing updates or inconsistent behavior across users. Timing issues and partial failures make these bugs hard to detect and reproduce.
+When to use and avoid caches
+Use caches for read heavy data that changes slowly and can tolerate slight staleness. Examples are configuration data profiles and reference data. Avoid caches for highly critical rapidly changing data like balances or inventory counts unless carefully designed. If correctness is more important than speed the database should be the main source.
