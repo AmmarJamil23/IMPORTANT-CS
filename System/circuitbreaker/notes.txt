@@ -1,0 +1,15 @@
+A circuit breaker in system design is a safety mechanism used to protect a system from repeated failures. It is inspired by an electrical circuit breaker used in homes. When too much current flows, the breaker cuts the power to prevent damage. In software systems, the idea is similar. When one service keeps failing, the circuit breaker stops sending requests to that service for some time. This prevents the whole system from becoming slow or completely broken.
+
+In distributed systems and microservices, many services depend on each other. If one service becomes slow or crashes, other services that call it can also get stuck waiting. This creates a chain reaction where a small failure turns into a big system outage. The circuit breaker helps stop this chain reaction by failing fast. Instead of waiting for a timeout again and again, the system quickly returns a controlled error or fallback response.
+
+A circuit breaker usually has three states. The first state is called closed. In this state, everything is normal and requests are allowed to pass through to the service. The system keeps monitoring the responses. If the number of failures crosses a defined limit, the circuit breaker changes its state. This means the system has detected a problem.
+
+The second state is called open. In this state, requests are not sent to the failing service at all. Any request that comes in is immediately rejected or handled by a fallback response. This protects the failing service from overload and also protects the caller from wasting time and resources. The circuit breaker stays open for a fixed cooling period so the service has time to recover.
+
+After the cooling period, the circuit breaker moves to the half open state. In this state, only a small number of test requests are allowed to go through. These requests are used to check if the service has recovered. If the service responds successfully, the circuit breaker goes back to the closed state and normal traffic resumes. If the service fails again, the circuit breaker returns to the open state.
+
+Fallback responses are an important part of circuit breakers. A fallback is a safe response returned when the main service is unavailable. For example, a dashboard may show cached data instead of live data. A payment system may show a friendly error message instead of crashing. Fallbacks help maintain a good user experience even when parts of the system are unhealthy.
+
+Circuit breakers improve system stability and resilience. They reduce load on failing services, prevent cascading failures, and make problems visible early. They also help teams identify weak parts of the system because frequent circuit breaker openings indicate deeper issues like poor scaling, slow databases, or network problems.
+
+In real systems, circuit breakers are often implemented using libraries or built into service frameworks. The core idea stays the same. Detect failures, stop traffic temporarily, test recovery carefully, and restore normal flow when safe. This simple pattern plays a big role in building reliable and production ready systems.
