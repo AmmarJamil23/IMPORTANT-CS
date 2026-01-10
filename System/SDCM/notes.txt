@@ -1,0 +1,44 @@
+Service Discovery
+
+What service discovery means
+Service discovery is how services find each other in a system. In modern systems services do not have fixed IP addresses. They start stop scale and move. Service discovery provides a way to locate a service dynamically instead of hardcoding addresses.
+
+Why service discovery exists
+Hardcoding service locations breaks when systems scale or restart. New instances come up with new addresses. Old ones disappear. Service discovery keeps communication working even when the system is changing constantly.
+
+How service discovery works (simple)
+Each service registers itself when it starts. A central registry keeps track of healthy services. When a service needs to talk to another service it asks the registry where to send the request. This lookup can be done directly or through a load balancer.
+
+Why service discovery is critical
+Without service discovery scaling becomes dangerous. Deployments cause outages. Failures spread because services cannot find healthy instances. Service discovery enables elasticity and resilience.
+
+Configuration Management
+
+What configuration management means
+Configuration management is how systems store and load settings like database URLs API keys timeouts and feature flags. These values are not code. They change between environments like development testing and production.
+
+Why configuration management exists
+Hardcoding configuration into code is risky. A small change requires redeploying the service. Secrets can leak. Different environments need different values. Configuration management separates behavior from configuration.
+
+How configuration management works (simple)
+Configurations are stored in files environment variables or centralized config services. When a service starts it loads its configuration. Changes can sometimes be applied without restarting the service.
+
+Why configuration management is central to reliability
+Bad configuration causes more outages than bad code. Wrong timeouts wrong database URLs or wrong limits can break a system instantly. Centralized configuration makes changes controlled consistent and reversible.
+
+How Service Discovery and Configuration Work Together
+
+Service discovery answers where is the service.
+Configuration management answers how should I talk to it.
+
+Service discovery gives the address.
+Configuration gives timeouts retries limits and credentials.
+
+Together they allow services to communicate safely at scale.
+
+Common failures caused by poor design
+
+• Hardcoded IPs cause outages during scaling
+• Inconsistent configs cause environment specific bugs
+• Manual config changes cause human errors
+• Missing discovery causes cascading failures
