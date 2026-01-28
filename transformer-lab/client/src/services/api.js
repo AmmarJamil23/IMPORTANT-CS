@@ -16,4 +16,9 @@ export const checkHealth = async () => {
     return response.data;
 };
 
+export const calculateAttention = async (tokens) => {
+    const response = await api.post('/calculate-attention', { tokens });
+    return response.data;
+}
+
 export default api;

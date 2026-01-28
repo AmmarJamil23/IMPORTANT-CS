@@ -1,40 +1,33 @@
 import { useState } from 'react';
+import { calculateAttention } from '../services/api';
 
 function AttentionVisualizer() {
-  const [inputText, setInputText] = useState('Hello World');
+  const [inputText, setInputText] = useState('the cat sat');
   const [tokens, setTokens] = useState([]);
   const [attentionMatrix, setAttentionMatrix] = useState([]);
   const [showMatrix, setShowMatrix] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getGrayscale = (value) => {
     const intensity = Math.floor((1 - value) * 255);
-    return `rgb(${intensity}, ${intensity}, ${intensity})`
-  }
+    return `rgb(${intensity}, ${intensity}, ${intensity})`;
+  };
 
-  const tokenizeText = () => {
+  const tokenizeAndCalculate = async () => {
     const words = inputText.trim().split(' ');
     setTokens(words);
+    setIsLoading(true);
     
-    // Create random attention matrix
-    const matrix = [];
-    for (let i = 0; i < words.length; i++) {
-      const row = [];
-      let sum = 0;
-      
-      // Generate random values
-      for (let j = 0; j < words.length; j++) {
-        const value = Math.random();
-        row.push(value);
-        sum += value;
-      }
-      
-      // Normalize so each row sums to 1.0
-      const normalized = row.map(val => val / sum);
-      matrix.push(normalized);
+    try {
+      const data = await calculateAttention(words);
+      setAttentionMatrix(data.attentionMatrix);
+      setShowMatrix(true);
+    } catch (error) {
+      console.error('Error:', error);
+      alert('Failed to calculate attention');
+    } finally {
+      setIsLoading(false);
     }
-    
-    setAttentionMatrix(matrix);
-    setShowMatrix(true);
   };
 
   return (
@@ -50,10 +43,11 @@ function AttentionVisualizer() {
       />
       
       <button
-        onClick={tokenizeText}
-        className="mt-4 px-6 py-2 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 hover:text-black"
+        onClick={tokenizeAndCalculate}
+        disabled={isLoading}
+        className="mt-4 px-6 py-2 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 hover:text-black  disabled:bg-gray-400"
       >
-        Calculate Attention
+        {isLoading ? 'Calculating...' : 'Calculate Attention'}
       </button>
 
       {tokens.length > 0 && (
@@ -91,8 +85,10 @@ function AttentionVisualizer() {
                       {tokens[i]}
                     </td>
                     {row.map((value, j) => (
-                      <td key={j} className="border border-white p-2 text-white text-center font-semibold"
-                      style={{ backgroundColor: getGrayscale(value) }}
+                      <td 
+                        key={j} 
+                        className="border border-white p-2 text-black text-center font-semibold"
+                        style={{ backgroundColor: getGrayscale(value) }}
                       >
                         {value.toFixed(2)}
                       </td>
