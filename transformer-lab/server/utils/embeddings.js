@@ -18,6 +18,6 @@ embeddingCache[word] = embedding;
 return embedding
 }
 
-export function getEmbedding(tokens) {
+export function getEmbeddings(tokens) {
     return tokens.map(token => getEmbedding(token.toLowerCase()));
 }

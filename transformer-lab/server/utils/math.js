@@ -10,7 +10,7 @@ export function dotProduct(vec1, vec2) {
 
 
 //matrix multiplication for attention scores
-export function computerAttentionScores(embeddings) {
+export function computeAttentionScores(embeddings) {
     const seqLen = embeddings.length;
     const scores = [];
 
