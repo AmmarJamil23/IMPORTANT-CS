@@ -4,6 +4,7 @@ import { calculateAttention } from '../services/api';
 function AttentionVisualizer() {
   const [inputText, setInputText] = useState('the cat sat');
   const [tokens, setTokens] = useState([]);
+  const [embeddings, setEmbeddings] = useState([]);
   const [attentionMatrix, setAttentionMatrix] = useState([]);
   const [showMatrix, setShowMatrix] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -20,6 +21,7 @@ function AttentionVisualizer() {
     
     try {
       const data = await calculateAttention(words);
+      setEmbeddings(data.embeddings);
       setAttentionMatrix(data.attentionMatrix);
       setShowMatrix(true);
     } catch (error) {
@@ -31,7 +33,7 @@ function AttentionVisualizer() {
   };
 
   return (
-    <div className="bg-black border border-white rounded-lg p-6 max-w-4xl">
+    <div className="bg-black border border-white rounded-lg p-6 max-w-6xl">
       <h2 className="text-2xl font-bold mb-4 text-white">Attention Visualizer</h2>
       
       <input 
@@ -45,7 +47,7 @@ function AttentionVisualizer() {
       <button
         onClick={tokenizeAndCalculate}
         disabled={isLoading}
-        className="mt-4 px-6 py-2 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 hover:text-black  disabled:bg-gray-400"
+        className="mt-4 px-6 py-2 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 hover:text-black disabled:bg-gray-400"
       >
         {isLoading ? 'Calculating...' : 'Calculate Attention'}
       </button>
@@ -59,6 +61,34 @@ function AttentionVisualizer() {
                 {token}
               </span>
             ))}
+          </div>
+        </div>
+      )}
+
+      {embeddings.length > 0 && (
+        <div className="mt-6">
+          <h3 className="text-xl font-bold text-white mb-3">Word Embeddings (8-dim vectors)</h3>
+          <div className="overflow-x-auto">
+            <table className="border-collapse border border-white">
+              <thead>
+                <tr>
+                  <th className="border border-white p-2 bg-black text-white">Token</th>
+                  <th className="border border-white p-2 bg-black text-white">Embedding Vector</th>
+                </tr>
+              </thead>
+              <tbody>
+                {embeddings.map((emb, i) => (
+                  <tr key={i}>
+                    <td className="border border-white p-2 text-white font-semibold">
+                      {tokens[i]}
+                    </td>
+                    <td className="border border-white p-2 text-white font-mono text-sm">
+                      [{emb.map(v => v.toFixed(3)).join(', ')}]
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
       )}
