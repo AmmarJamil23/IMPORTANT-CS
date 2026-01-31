@@ -5,7 +5,11 @@ function AttentionVisualizer() {
   const [inputText, setInputText] = useState('the cat sat');
   const [tokens, setTokens] = useState([]);
   const [embeddings, setEmbeddings] = useState([]);
-  const [attentionMatrix, setAttentionMatrix] = useState([]);
+  const [Q, setQ] = useState([]);
+  const [K, setK] = useState([]);
+  const [V, setV] = useState([]);
+  const [attentionWeights, setAttentionWeights] = useState([]);
+  const [output, setOutput] = useState([]);
   const [showMatrix, setShowMatrix] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -13,6 +17,7 @@ function AttentionVisualizer() {
     const intensity = Math.floor((1 - value) * 255);
     return `rgb(${intensity}, ${intensity}, ${intensity})`;
   };
+  console.log(embeddings)
 
   const tokenizeAndCalculate = async () => {
     const words = inputText.trim().split(' ');
@@ -22,7 +27,11 @@ function AttentionVisualizer() {
     try {
       const data = await calculateAttention(words);
       setEmbeddings(data.embeddings);
-      setAttentionMatrix(data.attentionMatrix);
+      setQ(data.Q);
+      setK(data.K);
+      setV(data.V);
+      setAttentionWeights(data.attentionWeights);
+      setOutput(data.output);
       setShowMatrix(true);
     } catch (error) {
       console.error('Error:', error);
@@ -61,41 +70,90 @@ function AttentionVisualizer() {
                 {token}
               </span>
             ))}
+            
           </div>
         </div>
       )}
 
-      {embeddings.length > 0 && (
-        <div className="mt-6">
-          <h3 className="text-xl font-bold text-white mb-3">Word Embeddings (8-dim vectors)</h3>
-          <div className="overflow-x-auto">
-            <table className="border-collapse border border-white">
-              <thead>
-                <tr>
-                  <th className="border border-white p-2 bg-black text-white">Token</th>
-                  <th className="border border-white p-2 bg-black text-white">Embedding Vector</th>
-                </tr>
-              </thead>
-              <tbody>
-                {embeddings.map((emb, i) => (
-                  <tr key={i}>
-                    <td className="border border-white p-2 text-white font-semibold">
-                      {tokens[i]}
-                    </td>
-                    <td className="border border-white p-2 text-white font-mono text-sm">
-                      [{emb.map(v => v.toFixed(3)).join(', ')}]
-                    </td>
+      {Q.length > 0 && (
+        <div className="mt-6 space-y-6">
+          <div>
+            <h3 className="text-xl font-bold text-white mb-3">Query (Q) - "What am I looking for?"</h3>
+            <div className="overflow-x-auto">
+              <table className="border-collapse border border-white">
+                <thead>
+                  <tr>
+                    <th className="border border-white p-2 bg-black text-white">Token</th>
+                    <th className="border border-white p-2 bg-black text-white">Q Vector</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {Q.map((q, i) => (
+                    <tr key={i}>
+                      <td className="border border-white p-2 text-white font-semibold">{tokens[i]}</td>
+                      <td className="border border-white p-2 text-white font-mono text-sm">
+                        [{q.map(v => v.toFixed(3)).join(', ')}]
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-xl font-bold text-white mb-3">Key (K) - "What do I represent?"</h3>
+            <div className="overflow-x-auto">
+              <table className="border-collapse border border-white">
+                <thead>
+                  <tr>
+                    <th className="border border-white p-2 bg-black text-white">Token</th>
+                    <th className="border border-white p-2 bg-black text-white">K Vector</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {K.map((k, i) => (
+                    <tr key={i}>
+                      <td className="border border-white p-2 text-white font-semibold">{tokens[i]}</td>
+                      <td className="border border-white p-2 text-white font-mono text-sm">
+                        [{k.map(v => v.toFixed(3)).join(', ')}]
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div>
+            <h3 className="text-xl font-bold text-white mb-3">Value (V) - "What info do I carry?"</h3>
+            <div className="overflow-x-auto">
+              <table className="border-collapse border border-white">
+                <thead>
+                  <tr>
+                    <th className="border border-white p-2 bg-black text-white">Token</th>
+                    <th className="border border-white p-2 bg-black text-white">V Vector</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {V.map((v, i) => (
+                    <tr key={i}>
+                      <td className="border border-white p-2 text-white font-semibold">{tokens[i]}</td>
+                      <td className="border border-white p-2 text-white font-mono text-sm">
+                        [{v.map(val => val.toFixed(3)).join(', ')}]
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       )}
 
       {showMatrix && tokens.length > 0 && (
         <div className="mt-6">
-          <h3 className="text-xl font-bold text-white mb-3">Attention Matrix</h3>
+          <h3 className="text-xl font-bold text-white mb-3">Attention Weights</h3>
           <div className="overflow-x-auto">
             <table className="border-collapse border border-white">
               <thead>
@@ -109,7 +167,7 @@ function AttentionVisualizer() {
                 </tr>
               </thead>
               <tbody>
-                {attentionMatrix.map((row, i) => (
+                {attentionWeights.map((row, i) => (
                   <tr key={i}>
                     <td className="border border-white p-2 bg-black text-white font-semibold">
                       {tokens[i]}
@@ -123,6 +181,32 @@ function AttentionVisualizer() {
                         {value.toFixed(2)}
                       </td>
                     ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
+
+      {output.length > 0 && (
+        <div className="mt-6">
+          <h3 className="text-xl font-bold text-white mb-3">Output (Attention × V)</h3>
+          <div className="overflow-x-auto">
+            <table className="border-collapse border border-white">
+              <thead>
+                <tr>
+                  <th className="border border-white p-2 bg-black text-white">Token</th>
+                  <th className="border border-white p-2 bg-black text-white">Output Vector</th>
+                </tr>
+              </thead>
+              <tbody>
+                {output.map((out, i) => (
+                  <tr key={i}>
+                    <td className="border border-white p-2 text-white font-semibold">{tokens[i]}</td>
+                    <td className="border border-white p-2 text-white font-mono text-sm">
+                      [{out.map(v => v.toFixed(3)).join(', ')}]
+                    </td>
                   </tr>
                 ))}
               </tbody>
