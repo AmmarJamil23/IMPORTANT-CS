@@ -1,28 +1,32 @@
 import { useEffect, useState } from "react";
 
 export function useMetricsStream() {
-    const [metrics, setMetrics] = useState({
-        users: 1200,
-        cpu: 65,
-        memory: 3.2
-    });
+  const [metrics, setMetrics] = useState(null);
+  const [status, setStatus] = useState("loading");
+  const [error, setError] = useState(null);
 
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setMetrics((prev) => ({
-                users: prev.users + Math.floor(Math.random() * 5),
+  useEffect(() => {
+    setStatus("loading");
 
-                cpu: Math.max(0, Math.min(100, prev.cpu + (Math.random() * 10 - 5)).toFixed(3)),
-                
-                memory: Math.max(
-                    0,
-                    (prev.memory + (Math.random() * 0.2 - 0.1)).toFixed(2)
-                )
-            }))
-        }, 2000);
+    const interval = setInterval(() => {
+      try {
+        const nextMetrics = {
+          users: 1200 + Math.floor(Math.random() * 100),
+          cpu: Math.max(0, Math.min(100, 50 + (Math.random() * 20 - 10)).toFixed(2)),
+          memory: Number((3 + (Math.random() * 0.5 - 0.25)).toFixed(2))
+        };
 
-        return () => clearInterval(interval);
-    }, []);
+        setMetrics(nextMetrics);
+        setStatus("success");
+      } catch (err) {
+        setError("Failed to update metrics");
+        setStatus("error");
+        console.log(err)
+      }
+    }, 2000);
 
-    return { metrics };
+    return () => clearInterval(interval);
+  }, []);
+
+  return { metrics, status, error };
 }
