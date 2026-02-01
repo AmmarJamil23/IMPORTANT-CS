@@ -1,3 +1,5 @@
+import { memo } from "react";
+
 function MetricCard({ title, value}) {
     return(
         <div className="bg-gray-900 rounded-lg p-4 shadow">
@@ -7,4 +9,4 @@ function MetricCard({ title, value}) {
     )
 }
 
-export default MetricCard;
+export default memo(MetricCard);

@@ -1,32 +1,36 @@
 import { useEffect, useState } from "react";
+import { connectToMetricsStream } from "../services/metricsService";
 
 export function useMetricsStream() {
   const [metrics, setMetrics] = useState(null);
+  const [history, setHistory] = useState([]);
   const [status, setStatus] = useState("loading");
   const [error, setError] = useState(null);
 
   useEffect(() => {
     setStatus("loading");
 
-    const interval = setInterval(() => {
-      try {
-        const nextMetrics = {
-          users: 1200 + Math.floor(Math.random() * 100),
-          cpu: Math.max(0, Math.min(100, 50 + (Math.random() * 20 - 10)).toFixed(2)),
-          memory: Number((3 + (Math.random() * 0.5 - 0.25)).toFixed(2))
-        };
+    const disconnect = connectToMetricsStream(
+      (payload) => {
+        setMetrics(payload);
 
-        setMetrics(nextMetrics);
+        setHistory((prev) => {
+          const updated = [...prev, payload];
+          return updated.slice(-20);
+        });
+
         setStatus("success");
-      } catch (err) {
-        setError("Failed to update metrics");
+      },
+      (errMsg) => {
+        setError(errMsg);
         setStatus("error");
-        console.log(err)
       }
-    }, 2000);
+    );
 
-    return () => clearInterval(interval);
+    
+
+    return () => disconnect();
   }, []);
 
-  return { metrics, status, error };
+  return { metrics, history,  status, error };
 }
