@@ -1,16 +1,16 @@
 import { useEffect, useState } from "react";
-import { connectToMetricsStream } from "../services/metricsService";
+import { createMetricsClient } from "../services/metricsService";
 
 export function useMetricsStream() {
   const [metrics, setMetrics] = useState(null);
   const [history, setHistory] = useState([]);
-  const [status, setStatus] = useState("loading");
+  const [status, setStatus] = useState("connecting");
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    setStatus("loading");
+    const client = createMetricsClient();
 
-    const disconnect = connectToMetricsStream(
+    const disconnect = client.connect(
       (payload) => {
         setMetrics(payload);
 
@@ -19,18 +19,21 @@ export function useMetricsStream() {
           return updated.slice(-20);
         });
 
-        setStatus("success");
+        setStatus("connected");
       },
       (errMsg) => {
         setError(errMsg);
         setStatus("error");
+      },
+      () => {
+        setStatus("connecting");
       }
     );
 
-    
-
-    return () => disconnect();
+    return () => {
+      disconnect();
+    };
   }, []);
 
-  return { metrics, history,  status, error };
+  return { metrics, history, status, error };
 }
