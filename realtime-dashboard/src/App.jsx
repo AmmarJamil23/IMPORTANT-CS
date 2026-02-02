@@ -1,10 +1,14 @@
 import Dashboard from "./pages/Dashboard"
+import { ConnectionProvider } from "./context/ConnectionContext";
 
 function App() {
   return (
-    <div className="min-h-screen bg-black text-white ">
+    <ConnectionProvider>
+      <div className="min-h-screen bg-black text-white ">
       <Dashboard />
     </div>
+    </ConnectionProvider>
+    
   )
 }
 

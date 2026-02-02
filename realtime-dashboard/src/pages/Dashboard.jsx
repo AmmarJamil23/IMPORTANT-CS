@@ -2,21 +2,23 @@ import DashboardLayout from "../components/layout/DashboardLayout";
 import MetricCard from "../components/cards/MetricCard";
 import MetricChart from "../components/charts/MetricChart";
 import { useMetricsStream } from "../hooks/useMetricsStream";
+import { useConnection } from "../context/ConnectionContext";
 
 function Dashboard() {
-  const { metrics, history, status, error } = useMetricsStream();
+  const { metrics, history, error } = useMetricsStream();
+  const { connectionStatus } = useConnection();
 
   return (
     <DashboardLayout>
-      {status === "connecting" && (
+      {connectionStatus === "connecting" && (
         <p className="text-yellow-400">Connecting to stream...</p>
       )}
 
-      {status === "error" && (
+      {connectionStatus === "error" && (
         <p className="text-red-400">{error}</p>
       )}
 
-      {status === "connected" && metrics && (
+      {metrics && (
         <>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             <MetricCard title="Active Users" value={metrics.users} />

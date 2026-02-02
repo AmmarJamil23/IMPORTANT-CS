@@ -1,11 +1,12 @@
 import { useEffect, useState } from "react";
 import { createMetricsClient } from "../services/metricsService";
+import { useConnection } from "../context/ConnectionContext";
 
 export function useMetricsStream() {
   const [metrics, setMetrics] = useState(null);
   const [history, setHistory] = useState([]);
-  const [status, setStatus] = useState("connecting");
   const [error, setError] = useState(null);
+  const { setConnectionStatus } = useConnection();
 
   useEffect(() => {
     const client = createMetricsClient();
@@ -19,14 +20,14 @@ export function useMetricsStream() {
           return updated.slice(-20);
         });
 
-        setStatus("connected");
+        setConnectionStatus("connected");
       },
       (errMsg) => {
         setError(errMsg);
-        setStatus("error");
+        setConnectionStatus("error");
       },
       () => {
-        setStatus("connecting");
+        setConnectionStatus("connecting");
       }
     );
 
@@ -35,5 +36,5 @@ export function useMetricsStream() {
     };
   }, []);
 
-  return { metrics, history, status, error };
+  return { metrics, history, error };
 }
