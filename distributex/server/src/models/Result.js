@@ -4,88 +4,75 @@ import mongoose from 'mongoose';
  * Result Schema
  * Stores intermediate and final MapReduce results
  */
-
 const resultSchema = new mongoose.Schema({
-  // Job Reference
+  // Associated Job
   jobId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Job',
     required: true,
     index: true
   },
-
-  // Stage (map or reduce)
-  stage: {
+  
+  // Phase
+  phase: {
     type: String,
+    enum: ['map', 'shuffle', 'reduce'],
     required: true,
-    enum: ['map', 'reduce'],
     index: true
   },
-
-  // Worker Reference
+  
+  // Worker who produced this
   workerId: {
     type: String,
     required: true
   },
-
-  // Chunk Info
+  
+  // Chunk information
   chunkId: {
     type: Number,
     required: true
   },
-
-  // Key-Value Pair
-  key: {
-    type: String,
-    required: true,
-    index: true
-  },
-
-  value: {
-    type: mongoose.Schema.Types.Mixed,  // Can be any type
+  
+  // The actual data
+  data: {
+    type: Map,
+    of: mongoose.Schema.Types.Mixed,
     required: true
   },
-
+  
   // Metadata
-  processedAt: {
-    type: Date,
-    default: Date.now
-  },
-
-  processingTime: {
-    type: Number,  // milliseconds
+  recordCount: {
+    type: Number,
     default: 0
+  },
+  
+  processingTime: {
+    type: Number, // milliseconds
+    required: true
+  },
+  
+  // For debugging
+  error: {
+    type: String,
+    default: null
   }
-
+  
 }, {
   timestamps: true,
   collection: 'results'
 });
 
 // Compound index for efficient queries
-resultSchema.index({ jobId: 1, stage: 1, key: 1 });
+resultSchema.index({ jobId: 1, phase: 1, chunkId: 1 });
 
 // Static method to get all map results for a job
 resultSchema.statics.getMapResults = function(jobId) {
-  return this.find({ jobId, stage: 'map' }).sort({ key: 1 });
+  return this.find({ jobId, phase: 'map' }).sort({ chunkId: 1 });
 };
 
-// Static method to get final reduce results
+// Static method to get final results for a job
 resultSchema.statics.getFinalResults = function(jobId) {
-  return this.find({ jobId, stage: 'reduce' }).sort({ key: 1 });
-};
-
-// Static method to group by key (for shuffle phase)
-resultSchema.statics.groupByKey = async function(jobId) {
-  return this.aggregate([
-    { $match: { jobId: mongoose.Types.ObjectId(jobId), stage: 'map' } },
-    {
-      $group: {
-        _id: '$key',
-        values: { $push: '$value' }
-      }
-    }
-  ]);
+  return this.findOne({ jobId, phase: 'reduce' }).sort({ createdAt: -1 });
 };
 
 export default mongoose.model('Result', resultSchema);
