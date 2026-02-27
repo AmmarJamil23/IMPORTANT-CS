@@ -16,7 +16,9 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
+from signals.views import create_signal_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path("api/signals/", create_signal_view),
 ]
